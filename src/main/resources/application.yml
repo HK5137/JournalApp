@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active : dev
+
+Logging :
+  level:
+    net:
+      engineeringdigest :
+        journalApp :
+          Service:
+            UserService: OFF
