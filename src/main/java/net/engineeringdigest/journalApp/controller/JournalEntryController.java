@@ -1,5 +1,6 @@
 package net.engineeringdigest.journalApp.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.engineeringdigest.journalApp.Service.JournalEntryService;
 import net.engineeringdigest.journalApp.Service.UserService;
 import net.engineeringdigest.journalApp.entity.JournalEntry;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name="Journal-entry Api's" , description = "Get , create & update entries")
 public class JournalEntryController {
     @Autowired
     private JournalEntryService journalEntryService;
@@ -60,14 +62,16 @@ public class JournalEntryController {
 
 
     @GetMapping("/id/{myId}")
-    public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable ObjectId myId){
+    public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable String myId){
+     ObjectId objId = new ObjectId(myId);
+
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userService.findByUserName(username);
         List<JournalEntry> collect= user.getJournalEntries().stream().filter(x -> x.getId().equals(myId)).toList();
         if(!collect.isEmpty()){
-            Optional<JournalEntry>  journalEntry= journalEntryService.findbyId(myId);
+            Optional<JournalEntry>  journalEntry= journalEntryService.findbyId(objId);
             return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
 
         }
